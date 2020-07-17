@@ -116,7 +116,7 @@ public class Main {
         
         //write image 
         write_png(watermarked_img, output_file);
-        watermarked_img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        //watermarked_img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 //        watermarked_img = read(output_file);
 //        write_jpg(watermarked_img, f_jpg);
 //        

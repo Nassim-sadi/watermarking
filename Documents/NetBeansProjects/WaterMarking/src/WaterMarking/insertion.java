@@ -34,6 +34,7 @@ public class insertion {
     static void insertion(BufferedImage img, BufferedImage waterImg, int width, int height, StringBuilder binary, int[] Estimator_pos) {
 //main loop to work on image
         int block_num = 0;
+        int msg_counter = 0;
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
@@ -52,7 +53,7 @@ public class insertion {
 
                 Estimator_pos[block_num] = estimator;
                 block_num = block_num + 1;
-                int msg_counter = 0;
+                
 
                 //-----------comparing estimator with pixels ------------------
                 //check is msg didn't end
@@ -61,9 +62,11 @@ public class insertion {
 
                         case 1: //------------------------------------------------------------------------------------- case 1
                             if (msg_counter < binary.length()) {
+                                
                                 //compare with pixel a
                                 if (msg_counter < binary.length()) {
                                     estimator = p1;
+                                    
                                     if (Math.abs(estimator - p2) < 2) {
 
                                         if (binary.charAt(msg_counter) == 1) {
@@ -75,10 +78,11 @@ public class insertion {
                                     } else if (estimator - p2 > 0) {
 
                                         p2 = p2 - 2;
-                                    } else if (estimator - p3 < 0){
+                                    } else if (estimator - p2 < 0){
                                         p2 = p2 + 2;
                                     }
                                     p2 = (p2 << 16) | (p2 << 8) | p2;
+                                    
                                     waterImg.setRGB(x + 1, y, p2);
                                 }
                                 //compare with pixel b
@@ -113,7 +117,7 @@ public class insertion {
                                     } else if (estimator - p4 > 0) {
 
                                         p4 = p4 - 2;
-                                    } else if (estimator - p3 < 0){
+                                    } else if (estimator - p4 < 0){
                                         p4 = p4 + 2;
                                     }
                                     p4 = (p4 << 16) | (p4 << 8) | p4;
@@ -138,7 +142,7 @@ public class insertion {
                                     } else if (estimator - p1 > 0) {
 
                                         p1 = p1 - 2;
-                                    } else if (estimator - p3 < 0){
+                                    } else if (estimator - p1 < 0){
                                         p1 = p1 + 2;
                                     }
                                     p1 = (p1 << 16) | (p1 << 8) | p1;
@@ -176,7 +180,7 @@ public class insertion {
                                     } else if (estimator - p4 > 0) {
 
                                         p4 = p4 - 2;
-                                    } else if (estimator - p3 < 0){
+                                    } else if (estimator - p4 < 0){
                                         p4 = p4 + 2;
                                     }
                                     p4 = (p4 << 16) | (p4 << 8) | p4;
@@ -201,7 +205,7 @@ public class insertion {
                                     } else if (estimator - p1 > 0) {
 
                                         p1 = p1 - 2;
-                                    } else if (estimator - p3 < 0){
+                                    } else if (estimator - p1 < 0){
                                         p1 = p1 + 2;
                                     }
                                     p1 = (p1 << 16) | (p1 << 8) | p1;
@@ -220,7 +224,7 @@ public class insertion {
                                     } else if (estimator - p2 > 0) {
 
                                         p2 = p2 - 2;
-                                    } else if (estimator - p3 < 0){
+                                    } else if (estimator - p2 < 0){
                                         p2 = p2 + 2;
                                     }
                                     p2 = (p2 << 16) | (p2 << 8) | p2;
@@ -239,7 +243,7 @@ public class insertion {
                                     } else if (estimator - p4 > 0) {
 
                                         p4 = p4 - 2;
-                                    } else if (estimator - p3 < 0){
+                                    } else if (estimator - p4 < 0){
                                         p4 = p4 + 2;
                                     }
                                     p4 = (p4 << 16) | (p4 << 8) | p4;
@@ -265,7 +269,7 @@ public class insertion {
                                     if (estimator - p1 > 0) {
 
                                         p1 = p1 - 2;
-                                    } else if (estimator - p3 < 0){
+                                    } else if (estimator - p1 < 0){
                                         p1 = p1 + 2;
                                     }
                                     p1 = (p1 << 16) | (p1 << 8) | p1;
@@ -284,7 +288,7 @@ public class insertion {
                                     } else if (estimator - p2 > 0) {
 
                                         p2 = p2 - 2;
-                                    } else if (estimator - p3 < 0){
+                                    } else if (estimator - p2 < 0){
                                         p2 = p2 + 2;
                                     }
                                     p2 = (p2 << 16) | (p2 << 8) | p2;
@@ -314,14 +318,14 @@ public class insertion {
                             }
                     }
                 } else {
-                    p1 = (p1 << 16) | (p1 << 8) | p1;
-                    waterImg.setRGB(x, y, p1);
-                    p2 = (p2 << 16) | (p2 << 8) | p2;
-                    waterImg.setRGB(x + 1, y, p2);
-                    p3 = (p3 << 16) | (p3 << 8) | p3;
-                    waterImg.setRGB(x, y + 1, p3);
-                    p4 = (p4 << 16) | (p4 << 8) | p4;
-                    waterImg.setRGB(x + 1, y + 1, p4);
+                    b1 = (p1 << 16) | (p1 << 8) | p1;
+                    waterImg.setRGB(x, y, b1);
+                    b2 = (p2 << 16) | (p2 << 8) | p2;
+                    waterImg.setRGB(x + 1, y, b2);
+                    b3 = (p3 << 16) | (p3 << 8) | p3;
+                    waterImg.setRGB(x, y + 1, b3);
+                    b4 = (p4 << 16) | (p4 << 8) | p4;
+                    waterImg.setRGB(x + 1, y + 1, b4);
 
                 }
                 // System.out.println(msg_counter);
