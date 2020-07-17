@@ -75,7 +75,7 @@ public class insertion {
                                     } else if (estimator - p2 > 0) {
 
                                         p2 = p2 - 2;
-                                    } else {
+                                    } else if (estimator - p3 < 0){
                                         p2 = p2 + 2;
                                     }
                                     p2 = (p2 << 16) | (p2 << 8) | p2;
@@ -94,7 +94,7 @@ public class insertion {
                                     } else if (estimator - p3 > 0) {
 
                                         p3 = p3 - 2;
-                                    } else {
+                                    } else if (estimator - p3 < 0){
                                         p3 = p3 + 2;
                                     }
                                     p3 = (p3 << 16) | (p3 << 8) | p3;
@@ -113,7 +113,7 @@ public class insertion {
                                     } else if (estimator - p4 > 0) {
 
                                         p4 = p4 - 2;
-                                    } else {
+                                    } else if (estimator - p3 < 0){
                                         p4 = p4 + 2;
                                     }
                                     p4 = (p4 << 16) | (p4 << 8) | p4;
@@ -138,7 +138,7 @@ public class insertion {
                                     } else if (estimator - p1 > 0) {
 
                                         p1 = p1 - 2;
-                                    } else {
+                                    } else if (estimator - p3 < 0){
                                         p1 = p1 + 2;
                                     }
                                     p1 = (p1 << 16) | (p1 << 8) | p1;
@@ -157,7 +157,7 @@ public class insertion {
                                     } else if (estimator - p3 > 0) {
 
                                         p3 = p3 - 2;
-                                    } else {
+                                    } else if (estimator - p3 < 0){
                                         p3 = p3 + 2;
                                     }
                                     p3 = (p3 << 16) | (p3 << 8) | p3;
@@ -176,7 +176,7 @@ public class insertion {
                                     } else if (estimator - p4 > 0) {
 
                                         p4 = p4 - 2;
-                                    } else {
+                                    } else if (estimator - p3 < 0){
                                         p4 = p4 + 2;
                                     }
                                     p4 = (p4 << 16) | (p4 << 8) | p4;
@@ -201,7 +201,7 @@ public class insertion {
                                     } else if (estimator - p1 > 0) {
 
                                         p1 = p1 - 2;
-                                    } else {
+                                    } else if (estimator - p3 < 0){
                                         p1 = p1 + 2;
                                     }
                                     p1 = (p1 << 16) | (p1 << 8) | p1;
@@ -220,7 +220,7 @@ public class insertion {
                                     } else if (estimator - p2 > 0) {
 
                                         p2 = p2 - 2;
-                                    } else {
+                                    } else if (estimator - p3 < 0){
                                         p2 = p2 + 2;
                                     }
                                     p2 = (p2 << 16) | (p2 << 8) | p2;
@@ -239,7 +239,7 @@ public class insertion {
                                     } else if (estimator - p4 > 0) {
 
                                         p4 = p4 - 2;
-                                    } else {
+                                    } else if (estimator - p3 < 0){
                                         p4 = p4 + 2;
                                     }
                                     p4 = (p4 << 16) | (p4 << 8) | p4;
@@ -265,7 +265,7 @@ public class insertion {
                                     if (estimator - p1 > 0) {
 
                                         p1 = p1 - 2;
-                                    } else {
+                                    } else if (estimator - p3 < 0){
                                         p1 = p1 + 2;
                                     }
                                     p1 = (p1 << 16) | (p1 << 8) | p1;
@@ -284,7 +284,7 @@ public class insertion {
                                     } else if (estimator - p2 > 0) {
 
                                         p2 = p2 - 2;
-                                    } else {
+                                    } else if (estimator - p3 < 0){
                                         p2 = p2 + 2;
                                     }
                                     p2 = (p2 << 16) | (p2 << 8) | p2;
@@ -303,7 +303,7 @@ public class insertion {
                                     } else if (estimator - p3 > 0) {
 
                                         p3 = p3 - 2;
-                                    } else {
+                                    } else if (estimator - p3 < 0){
                                         p3 = p3 + 2;
                                     }
                                     p3 = (p3 << 16) | (p3 << 8) | p3;
