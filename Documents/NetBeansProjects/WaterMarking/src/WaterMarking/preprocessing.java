@@ -6,12 +6,13 @@
 package WaterMarking;
 
 import java.awt.image.BufferedImage;
+
 /**
  *
  * @author Breeeeze
  */
 
-public class preprocessing{
+public class preprocessing {
 
     static void preprocessing(BufferedImage img, int width, int height) {
         for (int y = 0; y < height; y++) {
@@ -19,18 +20,16 @@ public class preprocessing{
 
                 int p = img.getRGB(x, y);
                 int r = (p >> 16) & 0xff;
-
                 if ((r <= 255) && (r > 249)) {
                     r = 255;
-                    p = (r << 16) | (r << 8) | r;
-                    img.setRGB(x, y, p);
 
-                } else if ((r <= 0) && (r >= 249)) {
+                } else if ((r >= 0) && (r <= 249)) {
                     r = r + 4;
-                    p = (r << 16) | (r << 8) | r;
-                    img.setRGB(x, y, p);
 
                 }
+                p = (r << 16) | (r << 8) | r;
+                img.setRGB(x, y, p);
+
             }
         }
     }

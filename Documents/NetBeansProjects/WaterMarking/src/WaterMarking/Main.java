@@ -70,10 +70,12 @@ public class Main {
         BufferedImage source_img = null;
         File source_file = null;
         BufferedImage watermarked_img = null;
+        BufferedImage extracted_img = null;
             //input
             source_file = new File("d:\\Java_tests\\shelbi-grey.jpg");
             //output
             File output_file = new File("d:\\java_tests\\png_output.png");
+            File extracted_file = new File("d:\\java_tests\\png_extracted.png");
             File f_jpg = new File("d:\\java_tests\\jpg_output.jpg");
         
         
@@ -89,8 +91,9 @@ public class Main {
         preprocessing p = new preprocessing();
         p.preprocessing(source_img, width, height);
         
-        //create new watermarked image
+        //create new watermarked/extracted image
         watermarked_img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        extracted_img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
        
         //---------reading secret msg---------to be controlled later????!!!!!!!!!!!!!!!!!!------------------
         Scanner myObj = new Scanner(System.in);  // Create a Scanner object
@@ -116,6 +119,14 @@ public class Main {
         
         //write image 
         write_png(watermarked_img, output_file);
+        //extracting msg 
+        
+        String extracted_msg="1";
+        extraction extract =new extraction();
+        extract.extraction(watermarked_img, height, width, extracted_img, estimator_position, extracted_msg);
+        System.out.println("extracting finished .... attempting writing to disk");
+         write_png(extracted_img, extracted_file);
+         System.out.println(extracted_msg);
         //watermarked_img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 //        watermarked_img = read(output_file);
 //        write_jpg(watermarked_img, f_jpg);
