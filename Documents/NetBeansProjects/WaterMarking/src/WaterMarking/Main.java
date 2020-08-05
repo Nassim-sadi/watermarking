@@ -73,6 +73,7 @@ public class Main {
         BufferedImage extracted_img = null;
             //input
             source_file = new File("d:\\Java_tests\\shelbi-grey.jpg");
+          //  source_file = new File("d:\\Java_tests\\test.png");
             //output
             File output_file = new File("d:\\java_tests\\png_output.png");
             File extracted_file = new File("d:\\java_tests\\png_extracted.png");
@@ -121,9 +122,9 @@ public class Main {
         write_png(watermarked_img, output_file);
         //extracting msg 
         
-        String extracted_msg="1";
+         String extracted_msg="";
         extraction extract =new extraction();
-        extract.extraction(watermarked_img, height, width, extracted_img, estimator_position, extracted_msg);
+        extract.extraction(watermarked_img, height, width, extracted_img, estimator_position, extracted_msg,binary_key.length());
         System.out.println("extracting finished .... attempting writing to disk");
          write_png(extracted_img, extracted_file);
          System.out.println(extracted_msg);
