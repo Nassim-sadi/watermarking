@@ -1,0 +1,19 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Aug 6, 2020, 7:44:21 PM
+    Author     : Breeeeze
+*/
+
+.button{
+    -fx-background-color: greenyellow;
+}
+#left_vbox{
+    -fx-border-color: black;
+}
+#Anchorpane{
+    background-color: black;
+}
