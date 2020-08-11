@@ -29,12 +29,12 @@ public class Main {
 
             image = ImageIO.read(temp_img);
 
-            /*if (temp_img.delete()) {
+            if (temp_img.delete()) {
                 System.out.println("File deleted successfully");
             } else {
                 System.out.println("Failed to delete the file");
             }
-            System.out.println("Reading image complete*/
+            System.out.println("Reading image complete");
 
         } catch (IOException e) {
             System.out.println("Error : " + e);
@@ -122,7 +122,7 @@ public class Main {
         write_png(watermarked_img, output_file);
         //extracting msg 
         
-         String extracted_msg="";
+        String extracted_msg="";
         extraction extract =new extraction();
         extract.extraction(watermarked_img, height, width, extracted_img, estimator_position, extracted_msg,binary_key.length());
         System.out.println("extracting finished .... attempting writing to disk");
@@ -131,7 +131,6 @@ public class Main {
         //watermarked_img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 //        watermarked_img = read(output_file);
 //        write_jpg(watermarked_img, f_jpg);
-//        
         
     }
 }
