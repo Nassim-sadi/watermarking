@@ -74,7 +74,10 @@
                       <Color blue="0.624" green="0.624" red="0.624" fx:id="x2" />
                     </textFill>
                   </Label>
-                        <Button mnemonicParsing="false" onAction="#File_btn_action" text="Open file to insert" textAlignment="CENTER" />
+                        <Label fx:id="greyLabel" prefHeight="65.0" prefWidth="188.0" style="-fx-border-color: gray;" text="Don't have a Grey image ? convert one" wrapText="true" />
+                        <Button mnemonicParsing="false" onAction="#greyConvert" text="Convert to Grey" />
+                        <Button mnemonicParsing="false" onAction="#File_btn_action" text="Open file to insert Watermark" textAlignment="CENTER" />
+                        <Button mnemonicParsing="false" onAction="#ReadPublicKey" text="insert Public key file" />
                         <TextArea fx:id="secret_key" prefHeight="0.0" prefWidth="200.0" promptText="Enter secret key" wrapText="true">
                            <opaqueInsets>
                               <Insets />
@@ -92,15 +95,12 @@
                         </Label>
                         <Separator prefHeight="5.0" prefWidth="200.0" />
                         <Button mnemonicParsing="false" onAction="#openWT_btn_action" text="Open file to Extract" />
+                        <Button mnemonicParsing="false" onAction="#ReadPrivateKey" text="Insert Private Key File" />
                         <Button mnemonicParsing="false" onAction="#openEst_btn_action" text="Open Est_pos Txt" />
                         <Label fx:id="DeWM_label" prefHeight="17.0" prefWidth="204.0" text="Open wm image and estimator file" textAlignment="CENTER" wrapText="true" />
                         <Button mnemonicParsing="false" onAction="#deWatermark_btn_action" text="DeWaterMark" />
-                        <Label fx:id="exMsgLabel" prefHeight="40.0" prefWidth="182.0" style="-fx-border-color: black;" text="the extracted msg will display here" wrapText="true" />
+                        <Label fx:id="exMsgLabel" prefHeight="75.0" prefWidth="200.0" style="-fx-border-color: black;" text="the extracted msg will display here" wrapText="true" />
                         <Separator prefWidth="200.0" />
-                        <Label fx:id="greyLabel" prefHeight="40.0" prefWidth="155.0" style="-fx-border-color: gray;" text="Don't have a Grey image ? convert one" wrapText="true" />
-                        <Button mnemonicParsing="false" onAction="#greyConvert" text="Convert to Grey" />
-                        <Separator prefWidth="200.0" />
-                        <Button mnemonicParsing="false" onAction="#exit" text="Exit" />
                      </children>
                      <padding>
                         <Insets top="5.0" />
@@ -117,16 +117,13 @@
     </SplitPane>
     <HBox id="HBox" alignment="CENTER_LEFT" maxHeight="30.0" prefHeight="30.0" spacing="5.0" VBox.vgrow="NEVER">
       <children>
-        <Label maxHeight="1.7976931348623157E308" maxWidth="-1.0" text="Left status" HBox.hgrow="ALWAYS">
-          <font>
-            <Font size="11.0" fx:id="x3" />
-          </font>
-          <textFill>
-            <Color blue="0.625" green="0.625" red="0.625" fx:id="x4" />
-          </textFill>
-        </Label>
-        <Pane prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS" />
-        <Label font="$x3" maxWidth="-1.0" text="Right status" textFill="$x4" HBox.hgrow="NEVER" />
+            <Button mnemonicParsing="false" onAction="#exit" text="Exit" />
+        <Pane prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Button layoutX="274.0" mnemonicParsing="false" onAction="#generateKeys" text="Generate RSA Keys" />
+                  <Label fx:id="RsaKeyLabel" layoutX="404.0" prefHeight="21.0" prefWidth="151.0" />
+                  <Label fx:id="crc_check" layoutX="18.0" layoutY="4.0" prefHeight="17.0" prefWidth="200.0" />
+               </children></Pane>
       </children>
       <padding>
         <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />

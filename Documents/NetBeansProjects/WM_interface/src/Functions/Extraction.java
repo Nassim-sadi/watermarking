@@ -276,10 +276,10 @@ public class Extraction {
             x++;
 
         }
+        System.out.println("the extracted binary is  "+extractedMsg.length());
         extractedMsg = extractedMsg.substring(0, exMsgLength);
         for (int i = 0; i < exMsgLength; i++) {
                     extractedMsgAr[i]=extractedMsg.charAt(i);
-
         }
     }
 }

@@ -370,6 +370,8 @@ public class Insertion {
             }
             x++;
         }
-
+        Estimator_pos[Estimator_pos.length -1]=msg_counter;
+        System.out.println("insertion msg counter : " + msg_counter);
+        System.out.println("the binary length is  " +binary.length());
     }
 }

@@ -5,16 +5,29 @@
  */
 package wm_interface;
 
+import Functions.CRC16CCITT;
 import Functions.Insertion;
 import Functions.Extraction;
 import static Functions.Extraction.binaryToText;
 import Functions.Preprocessing;
+import static Functions.Rsa.decrypt;
+import static Functions.Rsa.encrypt;
+import static Functions.Rsa.generateKeyPair;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.security.KeyFactory;
+import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -27,12 +40,16 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
@@ -72,8 +89,16 @@ public class FXMLDocumentController implements Initializable {
     private Label exMsgLabel;
     @FXML
     private Label greyLabel;
+    @FXML
+    private Label crc_check;
+    @FXML
+    private Label RsaKeyLabel;
+    @FXML
+    private TextArea publicKey;
 
     private File selectedFile;
+    private File privateFile;
+    private File publicFile;
     private File selectedwtFile;
     private File selectedSaveFile;
     private BufferedImage source_img;
@@ -85,6 +110,8 @@ public class FXMLDocumentController implements Initializable {
     private File estimator_pos_file;
     private int extMsgLength;
     private String extracted_msg;
+    private PublicKey public_key;
+    private PrivateKey private_key;
 //    @FXML
 //    private void handleButtonAction(ActionEvent event) {
 //        System.out.println("You clicked me!");
@@ -95,6 +122,112 @@ public class FXMLDocumentController implements Initializable {
     private void exit(ActionEvent event) {
 
         System.exit(0);
+    }
+
+    @FXML
+    public void generateKeys(ActionEvent event) {
+
+        try {
+            KeyPair pair = generateKeyPair();
+            PublicKey pub = pair.getPublic();
+            PrivateKey pri = pair.getPrivate();
+
+            //Set extension filter for text files
+            fc_save.setTitle("Choose public Key Save location");
+            fc_save.setInitialFileName("Public Key");
+            //     FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter();
+            //   fc_save.getExtensionFilters().add(extFilter);
+            //Show save file dialog
+
+            File file = fc_save.showSaveDialog(null);
+            String path = file.getAbsolutePath();
+
+            if (file != null) {
+                byte[] pubkey = pub.getEncoded();
+
+                try (FileOutputStream keyfos = new FileOutputStream(file)) {
+                    keyfos.write(pubkey);
+                }
+
+            } else {
+                RsaKeyLabel.setText("file not valid");
+            }
+
+            fc_save.setTitle("Choose Private Key Save location");
+            fc_save.setInitialFileName("Private Key");
+            file = fc_save.showSaveDialog(null);
+            if (file != null) {
+                byte[] prikey = pri.getEncoded();
+                try (FileOutputStream keyfos2 = new FileOutputStream(file)) {
+                    keyfos2.write(prikey);
+                }
+            } else {
+                RsaKeyLabel.setText("file not valid");
+            }
+            RsaKeyLabel.setText("Keys saved successfully");
+            RsaKeyLabel.setTextFill(Color.web("#0be30f"));
+
+        } catch (Exception ex) {
+            RsaKeyLabel.setText("Something went wrong !");
+            //Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    @FXML
+    public void ReadPublicKey(ActionEvent event) throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {
+        fc_openTxt.setTitle("Choose Public Key file");
+        fc_openTxt.setInitialFileName("Public Key");
+        //  fc_openTxt.getExtensionFilters().addAll(
+        //        new FileChooser.ExtensionFilter("Text files", "*.txt"));
+        publicFile = fc_openTxt.showOpenDialog(null);
+        if (publicFile != null) {
+
+            try (FileInputStream fileInput = new FileInputStream(publicFile)) {
+                byte[] encodedPublicKey = new byte[(int) publicFile.length()];
+                fileInput.read(encodedPublicKey);
+                KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+                X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(
+                        encodedPublicKey);
+                public_key = keyFactory.generatePublic(publicKeySpec);
+
+            }
+
+            key_label.setText("Files Ready. press Watermark !");
+            key_label.setTextFill(Color.web("#0be30f"));
+
+        } else {
+
+            key_label.setText("Open image first");
+            key_label.setTextFill(Color.web("#eb7915"));
+
+        }
+
+    }
+
+    @FXML
+    public void ReadPrivateKey(ActionEvent event) throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {
+        fc_openTxt.setTitle("Choose Private Key file");
+        fc_openTxt.setInitialFileName("Private Key");
+        //  fc_openTxt.getExtensionFilters().addAll(
+        //        new FileChooser.ExtensionFilter("Text files", "*.txt"));
+        privateFile = fc_openTxt.showOpenDialog(null);
+        if (selectedwtFile != null) {
+
+            try (FileInputStream fileInput = new FileInputStream(privateFile)) {
+                byte[] encodedPrivateKey = new byte[(int) privateFile.length()];
+                fileInput.read(encodedPrivateKey);
+                KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+                X509EncodedKeySpec privateKeySpec = new X509EncodedKeySpec(
+                        encodedPrivateKey);
+                private_key = keyFactory.generatePrivate(privateKeySpec);
+            }
+
+        } else {
+
+            DeWM_label.setText("file invalid");
+        }
+
     }
 
     @FXML
@@ -112,38 +245,62 @@ public class FXMLDocumentController implements Initializable {
                 imgView.setManaged(false);
                 SequentialTransition transitionForward = createTransition(imgView, image);
                 transitionForward.play();
-                
-                
-        int p;
-        
-        for (int x = 0 ; x < source_img.getHeight() ; x++ ){
-            for (int y = 0 ; y < source_img.getWidth(); y++){
-                p = source_img.getRGB(y , x);
-                int r = (p>>16) & 0xff;
-                int g = (p>>8)& 0xff;
-                int b = (p) & 0xff;
-                int avg = (r+g+b)/3;
-                
-                p = (avg<<16)|(avg<<8)|avg;
-                source_img.setRGB(y, x, p);
-                
-            }
-        }
+
+                int p;
+                int width = source_img.getWidth();
+                int height = source_img.getHeight();
+                if (width % 2 == 0) {
+                    if (height % 2 == 0) {
+                        width = width;
+                        height = height;
+                    } else {
+                        height = height - 1;
+                    }
+
+                } else {
+                    if (height % 2 == 0) {
+                        width = width - 1;
+                        height = height;
+                    } else {
+                        height = height - 1;
+
+                        width = width - 1;
+                    }
+                }
+                BufferedImage grey_img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+
+                for (int x = 0; x < height; x++) {
+                    for (int y = 0; y < width; y++) {
+                        p = source_img.getRGB(y, x);
+                        int r = (p >> 16) & 0xff;
+                        int g = (p >> 8) & 0xff;
+                        int b = (p) & 0xff;
+                        int avg = (r + g + b) / 3;
+
+                        p = (avg << 16) | (avg << 8) | avg;
+                        grey_img.setRGB(y, x, p);
+
+                    }
+                }
+
+                Preprocessing pre = new Preprocessing();
+                pre.preprocessing(grey_img, width, height);
+
 //                  
                 //        imgView.setImage(image);
                 greyLabel.setText("Converting completed");
-                  //Set extension filter for text files
-            fc_img_save.setInitialFileName("Grey version image");
-            fc_img_save.setTitle("Choose Image save location");
-            fc_img_save.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("Image files", "*.png"));
-            selectedSaveFile = fc_img_save.showSaveDialog(null);
-            ImageIO.write(source_img, "png", selectedSaveFile);
-            image = SwingFXUtils.toFXImage(source_img, null);
-             SequentialTransition transition = createTransition(imgView, image);
+                //Set extension filter for text files
+                fc_img_save.setInitialFileName("Grey version image");
+                fc_img_save.setTitle("Choose Image save location");
+                fc_img_save.getExtensionFilters().addAll(
+                        new FileChooser.ExtensionFilter("Image files", "*.png"));
+                selectedSaveFile = fc_img_save.showSaveDialog(null);
+                ImageIO.write(grey_img, "png", selectedSaveFile);
+                image = SwingFXUtils.toFXImage(grey_img, null);
+                SequentialTransition transition = createTransition(imgView, image);
                 transition.play();
-                
-            //imgView.setImage(image);
+
+                //imgView.setImage(image);
             } catch (IOException ex) {
                 Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -188,7 +345,7 @@ public class FXMLDocumentController implements Initializable {
 ///----------------------inserting Watermarking button
 
     @FXML
-    public void watermark_btn_action(ActionEvent event) {
+    public void watermark_btn_action(ActionEvent event) throws Exception {
         String key = secret_key.getText();
         if (!key.isEmpty() && selectedFile != null) {
 
@@ -201,17 +358,34 @@ public class FXMLDocumentController implements Initializable {
             if (selectedSaveFile != null) {
                 try {
 
-                    Preprocessing pre = new Preprocessing();
-                    pre.preprocessing(source_img, source_img.getWidth(), source_img.getHeight());
                     Insertion ins = new Insertion();
+                    String imgCrc = CRC16CCITT.getImgCrc(source_img, source_img.getWidth(), source_img.getHeight());
+                    String secondImgCrc ="";
+                    int  crclength = imgCrc.length();
+                    int step =imgCrc.length()/16;
+                           if((imgCrc.length()%16)>0){
+                               crclength = step *16 ;
+                           } 
+                    int counter=0;
+                    System.out.println("img crc length is : "+ imgCrc.length());
+                    while(counter<crclength){
+                    secondImgCrc += CRC16CCITT.calculateCRC(imgCrc.substring(counter,counter+step));
+                    counter+=step;
+                    }
+                    
+                    secondImgCrc +=key;
+                    
+                    System.out.println("second crc length is " + secondImgCrc.length());
+                    System.out.println("second crc is " + secondImgCrc);
+                   
                     //converting clé to binary
-                    StringBuilder binary_key = ins.convert_to_binary(key);
+                    StringBuilder binary_key = ins.convert_to_binary(secondImgCrc);
 
                     //create estimator pos array
                     int e_length = (source_img.getWidth() * source_img.getHeight()) / 4;
                     // System.out.println("number of blockes : "+e_length);
                     int[] estimator_position = new int[e_length + 1];
-                    estimator_position[estimator_position.length - 1] = binary_key.length();
+                   // estimator_position[estimator_position.length - 1] = binary_key.length();
                     //  System.out.println(binary_key.length());
                     watermarked_img = new BufferedImage(source_img.getWidth(), source_img.getHeight(), BufferedImage.TYPE_INT_RGB);
                     ins.insertion(source_img, watermarked_img, source_img.getWidth(), source_img.getHeight(), binary_key, estimator_position);
@@ -219,6 +393,9 @@ public class FXMLDocumentController implements Initializable {
                     for (int i = 0; i < estimator_position.length; i++) {
                         estimator = estimator + estimator_position[i];
                     }
+                    //  String cipherText = encrypt(estimator, public_key);
+
+                    //  estimator = Base64.getEncoder().encodeToString(encrypt(estimator, publicKey));
                     //System.out.println(estimator);
                     Image image = SwingFXUtils.toFXImage(watermarked_img, null);
                     ImageIO.write(watermarked_img, "png", selectedSaveFile);
@@ -297,7 +474,7 @@ public class FXMLDocumentController implements Initializable {
     }
 
     @FXML
-    public void openEst_btn_action(ActionEvent Event) {
+    public void openEst_btn_action(ActionEvent Event) throws Exception {
         fc_openTxt.setTitle("Choose Est_pos Text file");
         fc_openTxt.setInitialFileName("Est_pos");
         fc_openTxt.getExtensionFilters().addAll(
@@ -317,8 +494,10 @@ public class FXMLDocumentController implements Initializable {
                     while (scanner.hasNext()) {
                         estimator = estimator + scanner.next();
                     }
+                    // estimator = decrypt(estimator, private_key);
 
                     extMsg = estimator.substring(est_length);
+                    //   extMsg = RSAUtil.decrypt(extMsg, privateKey);
 
                     //System.out.println(estimator);
                     extMsgLength = Integer.parseInt(extMsg);
@@ -357,13 +536,54 @@ public class FXMLDocumentController implements Initializable {
             }
             extracted_msg = "";
             int[] extactedMsgArray = new int[extMsgLength];
+            System.out.println("ext msg length in controller is " + extMsgLength);
             extracted_img = new BufferedImage(watermarked_img2.getWidth(), watermarked_img2.getHeight(), BufferedImage.TYPE_INT_RGB);
             ext.extraction(watermarked_img2, watermarked_img2.getHeight(), watermarked_img2.getWidth(), extracted_img, estimator_position2, extactedMsgArray, extMsgLength);
+
+            ///// Getting extracted binary 
             for (int i = 0; i < extMsgLength; i++) {
                 extracted_msg = extracted_msg + (char) extactedMsgArray[i];
             }
+            
+            ///  converting extracted binary
+            String extracted_msgs = binaryToText(extracted_msg);
+            System.out.println(extracted_msgs);
+            //getting number of 16*16 blocks to calculate Crc length
+//            int numberOfCrcBlock = ((watermarked_img2.getHeight() *60/100) * (watermarked_img2.getWidth()*60/100) / 256);
+//            if (((watermarked_img2.getHeight() *60/100) * (watermarked_img2.getWidth()*60/100)) % 256 > 0) {
+//                numberOfCrcBlock++;
+//            }
+            
+            //getting extracted msg and crc each to a String
+            String extractedCrc = extracted_msgs.substring(0, 64);
+            
+            extracted_msg = extracted_msgs.substring(64);
 
-            extracted_msg = binaryToText(extracted_msg);
+            //getting Crc from extracted img to compare 
+            String exImgCrc = CRC16CCITT.getImgCrc(extracted_img, extracted_img.getWidth(), extracted_img.getHeight());
+                    String secondImgCrc ="";
+                    int  crclength = exImgCrc.length();
+                    int step =exImgCrc.length()/16;
+                           if((exImgCrc.length()%16)>0){
+                               crclength = step *16 ;
+                           } 
+                    int counter=0;
+                    System.out.println(" Ex img crc length is : "+ exImgCrc.length());
+                    while(counter<crclength){
+                    secondImgCrc += CRC16CCITT.calculateCRC(exImgCrc.substring(counter,counter+step));
+                    counter+=step;
+                    }
+                    
+            System.out.println(secondImgCrc);
+            if (secondImgCrc.equals(extractedCrc)) {
+                crc_check.setText("Crc check Valid  , image Is not tampered");
+                crc_check.setBackground(new Background(new BackgroundFill(Color.rgb(50, 240, 50, 0.7), new CornerRadii(5.0), new Insets(-5.0))));
+
+            } else {
+                crc_check.setText("Crc check NOT Valid  , image Is tampered");
+            crc_check.setBackground(new Background(new BackgroundFill(Color.rgb(240, 50, 50, 0.7), new CornerRadii(5.0), new Insets(-5.0))));
+
+            }
 
             DeWM_label.setText("Extracting Watermark completed .!");
             DeWM_label.setTextFill(Color.web("#0be30f"));
